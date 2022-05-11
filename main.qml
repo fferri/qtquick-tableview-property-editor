@@ -18,6 +18,7 @@ Window {
         anchors.fill: parent
 
         model: TableModel {
+            id: theModel
             TableModelColumn {
                 display: "name"
                 decoration: function() { return "";}
@@ -26,23 +27,38 @@ Window {
                 display: "value"
                 decoration: "type"
             }
-            rows: [
+            rows: _rows
+            property var _rows: [
                 {
                     name: "Name",
                     type: "string",
-                    value: root.name
+                    value: root.name,
+                    onValueChanged: function(v) {console.log('"name" changed to ',v)},
                 },
                 {
                     name: "Enabled",
                     type: "bool",
-                    value: root.enabled
+                    value: root.enabled,
+                    onValueChanged: function(v) {console.log('"enabled" changed to ',v)},
                 },
                 {
                     name: "Count",
                     type: "int",
-                    value: root.count
-                }
+                    value: root.count,
+                    onValueChanged: function(v) {console.log('"count" changed to ',v)},
+                },
+                {
+                    name: "Count2",
+                    type: "int",
+                    value: root.count,
+                    onValueChanged: function(v) {console.log('"count2" changed to ',v)},
+                },
             ]
+            function dispatchValueChange(row, decoration, value) {
+                row = _rows[row]
+                if(row && row.onValueChanged)
+                    row.onValueChanged(value)
+            }
         }
 
         delegate: DelegateChooser {
@@ -52,18 +68,21 @@ Window {
                 delegate: TextField {
                     text: model.display
                     selectByMouse: true
+                    onEditingFinished: theModel.dispatchValueChange(model.row, model.decoration, text)
                 }
             }
             DelegateChoice {
                 roleValue: "int"
                 delegate: SpinBox {
                     value: model.display
+                    onValueChanged: theModel.dispatchValueChange(model.row, model.decoration, value)
                 }
             }
             DelegateChoice {
                 roleValue: "bool"
                 delegate: CheckBox {
                     checked: model.display
+                    onCheckedChanged: theModel.dispatchValueChange(model.row, model.decoration, checked)
                 }
             }
             DelegateChoice {
