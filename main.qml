@@ -4,10 +4,15 @@ import QtQuick.Window 2.14
 import Qt.labs.qmlmodels 1.0
 
 Window {
+    id: root
     width: 640
     height: 480
     visible: true
     title: qsTr("Properties table")
+
+    property string name: "Bob"
+    property bool enabled: true
+    property int count: 42
 
     TableView {
         anchors.fill: parent
@@ -25,17 +30,17 @@ Window {
                 {
                     name: "Name",
                     type: "string",
-                    value: "Alfred"
+                    value: root.name
                 },
                 {
                     name: "Enabled",
                     type: "bool",
-                    value: true
+                    value: root.enabled
                 },
                 {
                     name: "Count",
                     type: "int",
-                    value: 2
+                    value: root.count
                 }
             ]
         }
